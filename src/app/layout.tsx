@@ -19,6 +19,20 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Build AI",
   description: "No code platform to create web interfaces.",
+  icons: {
+    icon: [
+      {
+        rel: "icon",
+        url: "/favicon-light.ico",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        rel: "icon",
+        url: "/favicon-dark.ico",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
