@@ -31,15 +31,16 @@ Convex + Next.js + Inngest
 Local
 
 +-------------------+ HTTP +-------------------+ HTTP / API +------------------------+
-| | ------------------> | | --------------------> | |
+| | -------------> | | ------------------> | |
 | Next.js Client | | Convex Dev Cloud | | Inngest Dev Server |
-| (localhost) | <------------------ | (Cloud sandbox) | <-------------------- | (localhost:8288 + ngrok) |
-| | Response | | Event API | |
+| (localhost) | <------------- | (Cloud sandbox) | <------------------ | (localhost:8288 + ngrok) |
+| | Response | Event API | | |
 +-------------------+ +-------------------+ +------------------------+
 ^ ^ ^
-| env: dev URL / keys | env: INNGEST_BASE_URL points to ngrok URL | local dev server running
-| (or localhost via tunnel) |
-| INNGEST_EVENT_KEY = dev key |
+| | |
+| env: dev URL / keys | env: INNGEST_BASE_URL points to ngrok URL
+| (or localhost via tunnel)
+| INNGEST_EVENT_KEY = dev key
 
 Next.js Client (localhost) ---> Convex Dev Cloud (Cloud Sandbox) ----> Inngest Dev Server (localhost:8288 + ngrok)
 
