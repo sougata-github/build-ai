@@ -30,6 +30,7 @@ Convex + Next.js + Inngest
 
 Local
 
+```mermaid
 +-------------------+ +-------------------+ +------------------------+
 | | HTTP | | HTTP | |
 | Next.js Client | --------> | Convex Dev Cloud | --------> | Inngest Dev Server |
@@ -37,6 +38,7 @@ Local
 | | <-------- | | <-------- | |
 | | Response | | Event API | |
 +-------------------+ +-------------------+ +------------------------+
+```
 
 Next.js Client (localhost) ---> Convex Dev Cloud (Cloud Sandbox) ----> Inngest Dev Server (localhost:8288 + ngrok)
 
