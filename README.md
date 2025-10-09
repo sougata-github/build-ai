@@ -31,13 +31,22 @@ Convex + Next.js + Inngest
 Local
 
 ```mermaid
-+-------------------+ +-------------------+ +------------------------+
-| | HTTP | | HTTP | |
-| Next.js Client | --------> | Convex Dev Cloud | --------> | Inngest Dev Server |
-| (localhost) | | (Cloud sandbox) | | (localhost:8288 + ngrok)|
-| | <-------- | | <-------- | |
-| | Response | | Event API | |
-+-------------------+ +-------------------+ +------------------------+
+flowchart LR
+    A[Next.js Client (localhost)] -->|HTTP / Fetch| B[Convex Dev Cloud (Cloud sandbox)]
+    B -->|HTTP / Event API| C[Inngest Dev Server (localhost:8288 + ngrok)]
+    C -->|Event Response| B
+    B -->|Response| A
+
+    subgraph Env
+        direction LR
+        A_env[INNGEST_EVENT_KEY = dev key<br>INNGEST_BASE_URL = dev URL / tunnel]
+        B_env[INNGEST_EVENT_KEY = dev key<br>INNGEST_BASE_URL = ngrok URL]
+        C_env[Running locally or via ngrok]
+    end
+
+    A --- A_env
+    B --- B_env
+    C --- C_env
 ```
 
 Next.js Client (localhost) ---> Convex Dev Cloud (Cloud Sandbox) ----> Inngest Dev Server (localhost:8288 + ngrok)
