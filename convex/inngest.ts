@@ -14,7 +14,7 @@ export const invoke = internalAction({
       await inngest.send({
         name: "test/hello.world",
         data: {
-          email: input,
+          input,
         },
       });
     } catch (error) {
