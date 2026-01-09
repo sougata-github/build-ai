@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import { ConvexClientProvider } from "@/components/providers/ConvexClientProvider";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -29,8 +30,12 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
-        theme: dark,
+        baseTheme: dark,
       }}
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      signInFallbackRedirectUrl="/"
+      signUpFallbackRedirectUrl="/"
     >
       <html lang="en" suppressHydrationWarning>
         <body
@@ -42,7 +47,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <ConvexClientProvider>{children}</ConvexClientProvider>
           </ThemeProvider>
         </body>
       </html>
