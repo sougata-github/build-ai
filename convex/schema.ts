@@ -3,6 +3,7 @@ import { v } from "convex/values";
 
 export default defineSchema({
   projects: defineTable({
+    id: v.string(),
     name: v.string(),
     userId: v.string(),
     importStatus: v.optional(
@@ -12,5 +13,17 @@ export default defineSchema({
         v.literal("failed")
       )
     ),
-  }).index("by_user", ["userId"]),
+    exportStatus: v.optional(
+      v.union(
+        v.literal("exporting"),
+        v.literal("completed"),
+        v.literal("failed"),
+        v.literal("cancelled")
+      )
+    ),
+    exportRepoUrl: v.optional(v.string()),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_uuid", ["id"]),
 });

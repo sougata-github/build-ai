@@ -1,36 +1,47 @@
-import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { verifyAuth } from "./auth";
+import { mutation, query } from "./_generated/server";
+import { paginationOptsValidator } from "convex/server";
 
 export const create = mutation({
   args: {
     name: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
+    const identity = await verifyAuth(ctx);
 
-    if (!identity) {
-      throw new Error("Unauthorized");
-    }
-
-    await ctx.db.insert("projects", {
+    const projectId = await ctx.db.insert("projects", {
+      id: crypto.randomUUID(),
       name: args.name,
       userId: identity.subject,
+      updatedAt: Date.now(),
     });
+
+    return projectId;
   },
 });
 
 export const get = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      throw new Error("Unauthorized");
-    }
+    const identity = await verifyAuth(ctx);
 
     return await ctx.db
       .query("projects")
       .withIndex("by_user", (q) => q.eq("userId", identity.subject))
       .collect();
+  },
+});
+
+export const getPartial = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    const identity = await verifyAuth(ctx);
+
+    return await ctx.db
+      .query("projects")
+      .withIndex("by_user", (q) => q.eq("userId", identity.subject))
+      .order("desc")
+      .paginate(args.paginationOpts);
   },
 });

@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { ConvexClientProvider } from "@/components/providers/ConvexClientProvider";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -48,6 +49,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <ConvexClientProvider>{children}</ConvexClientProvider>
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>
