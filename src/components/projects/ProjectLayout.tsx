@@ -1,0 +1,40 @@
+"use client";
+
+import { Doc } from "@convex/_generated/dataModel";
+import { Navbar } from "./Navbar";
+import { Allotment } from "allotment";
+import "allotment/dist/style.css";
+
+interface Props {
+  children: React.ReactNode;
+  projectId: Doc<"projects">["id"];
+}
+
+const MIN_SIDEBAR_WIDTH = 200;
+const MAX_SIDEBAR_WIDTH = 800;
+const DEFAULT_MAIN_SIZE = 1000;
+const DEFAULT_CONVERSATION_SIDEBAR_WIDTH = 400;
+
+export const ProjectLayout = ({ children, projectId }: Props) => {
+  return (
+    <div className="w-full h-screen flex flex-col">
+      <Navbar projectId={projectId} />
+      <div className="flex-1 flex overflow-hidden">
+        <Allotment
+          className="flex-1"
+          defaultSizes={[DEFAULT_MAIN_SIZE, DEFAULT_CONVERSATION_SIDEBAR_WIDTH]}
+        >
+          <Allotment.Pane
+            snap
+            minSize={MIN_SIDEBAR_WIDTH}
+            maxSize={MAX_SIDEBAR_WIDTH}
+            preferredSize={DEFAULT_CONVERSATION_SIDEBAR_WIDTH}
+          >
+            <div>Conversation Sidebar</div>
+          </Allotment.Pane>
+          <Allotment.Pane>{children}</Allotment.Pane>
+        </Allotment>
+      </div>
+    </div>
+  );
+};
