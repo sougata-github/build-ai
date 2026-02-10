@@ -27,4 +27,20 @@ export default defineSchema({
     .index("by_uuid", ["id"])
     .index("by_user", ["userId"])
     .index("by_user_updatedAt", ["userId", "updatedAt"]),
+
+  files: defineTable({
+    id: v.string(),
+    projectId: v.string(), //the uuid of the project
+    parentId: v.optional(v.string()),
+    name: v.string(),
+    type: v.union(v.literal("file"), v.literal("folder")),
+    content: v.optional(v.string()), //text files only
+    storageId: v.optional(v.id("_storage")),
+    updatedAt: v.number(),
+  })
+    .index("by_uuid", ["id"])
+    .index("by_project", ["projectId"])
+    .index("by_project_parent", ["projectId", "parentId"])
+    .index("by_parent", ["parentId"])
+    .index("by_project_updatedAt", ["projectId", "updatedAt"]),
 });

@@ -2,8 +2,10 @@
 
 import { cn } from "@/lib/utils";
 import { Doc } from "@convex/_generated/dataModel";
+import { Allotment } from "allotment";
 import { useState } from "react";
 import { FiGithub } from "react-icons/fi";
+import { FileExplorer } from "./file-explorer";
 
 interface Props {
   projectId: Doc<"projects">["id"];
@@ -30,6 +32,11 @@ const Tab = ({
     </div>
   );
 };
+
+const MIN_SIDEBAR_WIDTH = 200;
+const MAX_SIDEBAR_WIDTH = 800;
+const DEFAULT_SIDEBAR_WIDTH = 350;
+const DEFAULT_MAIN_SIZE = 1000;
 
 export const ProjectView = ({ projectId }: Props) => {
   const [activeView, setActiveView] = useState<"editor" | "preview">("editor");
@@ -62,7 +69,19 @@ export const ProjectView = ({ projectId }: Props) => {
             activeView === "editor" ? "visible" : "invisible"
           )}
         >
-          <div>Editor</div>
+          <Allotment defaultSizes={[DEFAULT_MAIN_SIZE, DEFAULT_SIDEBAR_WIDTH]}>
+            <Allotment.Pane
+              snap
+              minSize={MIN_SIDEBAR_WIDTH}
+              maxSize={MAX_SIDEBAR_WIDTH}
+              preferredSize={DEFAULT_SIDEBAR_WIDTH}
+            >
+              <FileExplorer projectId={projectId} />
+            </Allotment.Pane>
+            <Allotment.Pane>
+              <p>Editor View</p>
+            </Allotment.Pane>
+          </Allotment>
         </div>
         <div
           className={cn(
