@@ -159,7 +159,7 @@
 
   .cl-socialButtonsBlockButton:hover {
     color: white;
-    background: #1f1f1f;
+    background: #b2b2b22e;
   }
 
   .cl-footerActionText {
@@ -172,12 +172,16 @@
 
   .cl-footerActionLink:hover {
     color: var(--muted-foreground);
-    opacity: 0.4;
+    opacity: 0.8;
   }
 
   .cl-buttonArrowIcon {
     display: none;
   }
+}
+
+.cl-internal-l2l775 {
+  display: none !important;
 }
 
 @keyframes pulse-dot {

@@ -33,10 +33,6 @@ export default function RootLayout({
       appearance={{
         baseTheme: dark,
       }}
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
-      signInFallbackRedirectUrl="/"
-      signUpFallbackRedirectUrl="/"
     >
       <html lang="en" suppressHydrationWarning>
         <body
