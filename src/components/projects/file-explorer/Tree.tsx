@@ -67,9 +67,11 @@ const Tree = ({ item, siblings, level = 0, projectId }: Props) => {
     setCreating(type);
   };
 
+  // file display --> No creating or children
   if (item.type === "file") {
     const fileName = item.name;
 
+    // when renaming a file --> show rename-input
     if (isRenaming) {
       return (
         <RenameInput
@@ -84,6 +86,7 @@ const Tree = ({ item, siblings, level = 0, projectId }: Props) => {
       );
     }
 
+    // idle state
     return (
       <TreeItemWrapper
         item={item}
@@ -105,6 +108,7 @@ const Tree = ({ item, siblings, level = 0, projectId }: Props) => {
     );
   }
 
+  // folder display --> creating, renaming or children
   const folderName = item.name;
 
   const folderRender = (
@@ -122,6 +126,7 @@ const Tree = ({ item, siblings, level = 0, projectId }: Props) => {
     </>
   );
 
+  // when creating a new folder --> show creat-input and children
   if (creating) {
     return (
       <>
@@ -157,6 +162,7 @@ const Tree = ({ item, siblings, level = 0, projectId }: Props) => {
     );
   }
 
+  // when renaming a folder --> show rename-input and children
   if (isRenaming) {
     return (
       <>
@@ -187,6 +193,7 @@ const Tree = ({ item, siblings, level = 0, projectId }: Props) => {
     );
   }
 
+  // idle state --> show folder-render and children
   return (
     <>
       <TreeItemWrapper
