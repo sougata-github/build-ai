@@ -16,6 +16,7 @@ import { getItemPadding } from "@/constants";
 import CreateInput from "./CreateInput";
 import RenameInput from "./RenameInput";
 import { toast } from "sonner";
+import { useEditor } from "@/hooks/use-editor";
 
 interface Props {
   item: Doc<"files">;
@@ -33,6 +34,10 @@ const Tree = ({ item, siblings, level = 0, projectId }: Props) => {
   const deleteFile = useDeleteFile();
   const createFile = useCreateFile();
   const createFolder = useCreateFolder();
+
+  const { openFile, closeTab, activeTabId } = useEditor({
+    projectId,
+  });
 
   const folderContents = useFolderContents({
     projectId,
@@ -70,6 +75,7 @@ const Tree = ({ item, siblings, level = 0, projectId }: Props) => {
   // file display --> No creating or children
   if (item.type === "file") {
     const fileName = item.name;
+    const isActive = activeTabId === item.id;
 
     // when renaming a file --> show rename-input
     if (isRenaming) {
@@ -91,12 +97,12 @@ const Tree = ({ item, siblings, level = 0, projectId }: Props) => {
       <TreeItemWrapper
         item={item}
         level={level}
-        isActive={false}
-        onClick={() => {}}
-        onDoubleClick={() => {}}
+        isActive={isActive}
+        onClick={() => openFile(item.id, { pinned: false })}
+        onDoubleClick={() => openFile(item.id, { pinned: true })}
         onRename={() => setIsRenaming(true)}
         onDelete={() => {
-          //close tab
+          closeTab(item.id);
           deleteFile({ id: item.id }).catch((error: Error) => {
             toast.error(error.message);
           });
@@ -126,7 +132,7 @@ const Tree = ({ item, siblings, level = 0, projectId }: Props) => {
     </>
   );
 
-  // when creating a new folder --> show creat-input and children
+  // when creating a new folder --> show create-input and children
   if (creating) {
     return (
       <>
@@ -203,7 +209,6 @@ const Tree = ({ item, siblings, level = 0, projectId }: Props) => {
         onClick={() => setIsOpen((prev) => !prev)}
         onRename={() => setIsRenaming(true)}
         onDelete={() => {
-          //close tab
           deleteFile({ id: item.id }).catch((error: Error) => {
             toast.error(error.message);
           });

@@ -33,3 +33,11 @@ export const useRenameFile = () => {
 export const useDeleteFile = () => {
   return useMutation(api.files.deleteFile);
 };
+
+export const useFile = (fileId: Doc<"files">["id"] | null) => {
+  return useQuery(api.files.getFile, fileId ? { id: fileId } : "skip");
+};
+
+export const useFilePath = (fileId: Doc<"files">["id"] | null) => {
+  return useQuery(api.files.getFilePath, fileId ? { id: fileId } : "skip");
+};

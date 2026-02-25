@@ -6,6 +6,7 @@ import { Allotment } from "allotment";
 import { useState } from "react";
 import { FiGithub } from "react-icons/fi";
 import { FileExplorer } from "./file-explorer";
+import EditorView from "./EditorView";
 
 interface Props {
   projectId: Doc<"projects">["id"];
@@ -79,7 +80,7 @@ export const ProjectView = ({ projectId }: Props) => {
               <FileExplorer projectId={projectId} />
             </Allotment.Pane>
             <Allotment.Pane>
-              <p>Editor View</p>
+              <EditorView projectId={projectId} />
             </Allotment.Pane>
           </Allotment>
         </div>

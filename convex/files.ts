@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { verifyAuth } from "./auth";
 import { mutation, query } from "./_generated/server";
-import { Id } from "./_generated/dataModel";
+import { Doc, Id } from "./_generated/dataModel";
 
 export const getFiles = query({
   args: {
@@ -375,5 +375,56 @@ export const updateFile = mutation({
     await ctx.db.patch(project._id, {
       updatedAt: now,
     });
+  },
+});
+
+// should return the array of the path to the file. Example: src > components > button.tsx
+export const getFilePath = query({
+  args: {
+    id: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await verifyAuth(ctx);
+
+    const file = await ctx.db
+      .query("files")
+      .withIndex("by_uuid", (q) => q.eq("id", args.id))
+      .first();
+
+    if (!file) {
+      throw new Error("File not found");
+    }
+
+    const project = await ctx.db
+      .query("projects")
+      .withIndex("by_uuid", (q) => q.eq("id", file.projectId))
+      .first();
+
+    if (!project) {
+      throw new Error("Project not found");
+    }
+
+    if (project.userId !== identity.subject) {
+      throw new Error("Unauthorized access to project");
+    }
+
+    const path: { id: string; name: string }[] = [];
+
+    let currentId: Doc<"files">["id"] | undefined = args.id;
+
+    while (currentId) {
+      const file = await ctx.db
+        .query("files")
+        .withIndex("by_uuid", (q) => q.eq("id", currentId as string))
+        .first();
+
+      if (!file) break;
+
+      path.unshift({ id: file.id, name: file.name });
+
+      currentId = file.parentId;
+    }
+
+    return path;
   },
 });
