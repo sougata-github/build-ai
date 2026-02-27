@@ -2,17 +2,24 @@ import { Doc } from "@convex/_generated/dataModel";
 import TopNavigation from "./TopNavigation";
 import { useEditor } from "@/hooks/use-editor";
 import FileBreadCrumbs from "./FileBreadCrumbs";
-import { useFile } from "@/hooks/use-files";
+import { useFile, useUpdateFile } from "@/hooks/use-files";
 import { Box } from "lucide-react";
 import CodeEditor from "./CodeEditor";
+import { useRef } from "react";
 
 interface Props {
   projectId: Doc<"projects">["id"];
 }
 
+const DEBOUNCE_MS = 1500;
+
 const EditorView = ({ projectId }: Props) => {
   const { activeTabId } = useEditor({ projectId });
   const activeFile = useFile(activeTabId);
+  const updateFile = useUpdateFile();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isActiveFileBinary = activeFile && activeFile.storageId;
+  const isActiveFileText = activeFile && !activeFile.storageId;
 
   return (
     <div className="h-full flex flex-col">
@@ -26,7 +33,22 @@ const EditorView = ({ projectId }: Props) => {
             <Box className="size-10 text-muted-foreground opacity-25" />
           </div>
         )}
-        {activeFile && <CodeEditor />}
+        {isActiveFileText && (
+          <CodeEditor
+            key={activeFile._id}
+            fileName={activeFile.name}
+            initialValue={activeFile.content ?? ""}
+            onChange={(content: string) => {
+              if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+              }
+              timeoutRef.current = setTimeout(() => {
+                updateFile({ id: activeFile.id, content: content });
+              }, DEBOUNCE_MS);
+            }}
+          />
+        )}
+        {isActiveFileBinary && <p>Implement binary file editor</p>}
       </div>
     </div>
   );

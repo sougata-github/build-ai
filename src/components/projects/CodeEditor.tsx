@@ -1,32 +1,45 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { basicSetup, EditorView } from "codemirror";
-import { javascript } from "@codemirror/lang-javascript";
-import { vercel } from "./EditorTheme";
+import { keymap } from "@codemirror/view";
+import { useEffect, useMemo, useRef } from "react";
+import { EditorView } from "codemirror";
+import { indentWithTab } from "@codemirror/commands";
+import { vercel as customTheme } from "@/lib/editor-theme";
+import { getLanguageExtensions } from "@/lib/language-extension";
+import { indentationMarkers } from "@replit/codemirror-indentation-markers";
+import { customSetup } from "@/lib/custom-setup";
 
-const CodeEditor = () => {
+interface Props {
+  fileName: string;
+  initialValue?: string;
+  onChange: (value: string) => void;
+}
+
+const CodeEditor = ({ fileName, initialValue = "", onChange }: Props) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
+
+  const languageExtension = useMemo(() => {
+    return getLanguageExtensions(fileName);
+  }, [fileName]);
 
   useEffect(() => {
     if (!editorRef.current) return;
 
     const view = new EditorView({
-      doc: `const Counter = () => {
-  const [count, setCount] = useState(0);
-  return (
-    <div>
-      <p>Count: {count}</p>
-      <button onClick={() => setCount(count + 1)}>Increment</button>
-    </div>
-  );
-}`,
+      doc: initialValue,
       parent: editorRef.current,
       extensions: [
-        vercel,
-        basicSetup,
-        javascript({ jsx: true, typescript: true }),
+        customTheme,
+        customSetup,
+        languageExtension,
+        keymap.of([indentWithTab]),
+        indentationMarkers(),
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged) {
+            onChange(update.state.doc.toString());
+          }
+        }),
       ],
     });
 
@@ -34,7 +47,8 @@ const CodeEditor = () => {
     return () => {
       view.destroy();
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [languageExtension]);
 
   return <div ref={editorRef} className="size-full"></div>;
 };
