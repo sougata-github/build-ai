@@ -5,7 +5,7 @@ import FileBreadCrumbs from "./FileBreadCrumbs";
 import { useFile, useUpdateFile } from "@/hooks/use-files";
 import { Box } from "lucide-react";
 import CodeEditor from "./CodeEditor";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface Props {
   projectId: Doc<"projects">["id"];
@@ -20,6 +20,12 @@ const EditorView = ({ projectId }: Props) => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isActiveFileBinary = activeFile && activeFile.storageId;
   const isActiveFileText = activeFile && !activeFile.storageId;
+
+  useEffect(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  }, [activeTabId]);
 
   return (
     <div className="h-full flex flex-col">
