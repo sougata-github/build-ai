@@ -8,6 +8,8 @@ import { vercel as customTheme } from "@/lib/editor-theme";
 import { getLanguageExtensions } from "@/lib/language-extension";
 import { indentationMarkers } from "@replit/codemirror-indentation-markers";
 import { customSetup } from "@/lib/custom-setup";
+import { quickEdit } from "@/lib/quick-edit";
+import { selectionTooltip } from "@/lib/selection-tooltip";
 // import { suggestion } from "@/lib/suggestion";
 
 interface Props {
@@ -35,6 +37,8 @@ const CodeEditor = ({ fileName, initialValue = "", onChange }: Props) => {
         customSetup,
         languageExtension,
         // suggestion(fileName),
+        quickEdit(fileName),
+        selectionTooltip(),
         keymap.of([indentWithTab]),
         indentationMarkers(),
         EditorView.updateListener.of((update) => {

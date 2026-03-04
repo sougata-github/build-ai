@@ -30,7 +30,7 @@ const suggestionResponseSchema = z.object({
 type SuggestionResponse = z.infer<typeof suggestionResponseSchema>;
 type SuggestionRequest = z.infer<typeof suggestionRequestSchema>;
 
-export const fetcher = async (
+export const suggestionFetcher = async (
   payload: SuggestionRequest,
   signal?: AbortSignal
 ): Promise<string | null> => {
@@ -158,7 +158,7 @@ const debouncePlugin = (fileName: string) => {
 
           currentAbortController = new AbortController();
 
-          const suggestion = await fetcher(
+          const suggestion = await suggestionFetcher(
             payload,
             currentAbortController.signal
           );
@@ -263,9 +263,9 @@ const acceptSuggestionKeymap = keymap.of([
 
 export const suggestion = (fileName: string): Extension[] => {
   return [
-    suggestionState, //state storage
-    debouncePlugin(fileName), //trigger suggestions on type
-    renderPlugin, //render ghost text
-    acceptSuggestionKeymap, //tab to accept
+    suggestionState,
+    debouncePlugin(fileName),
+    renderPlugin,
+    acceptSuggestionKeymap,
   ];
 };

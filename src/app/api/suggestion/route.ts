@@ -2,8 +2,15 @@ import { generateText } from "ai";
 import { NextResponse } from "next/server";
 import { groq } from "@ai-sdk/groq";
 import { SUGGESTION_PROMPT } from "@/constants";
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST(req: Request) {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     let body;
     try {
