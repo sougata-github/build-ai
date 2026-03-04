@@ -8,7 +8,7 @@ import { vercel as customTheme } from "@/lib/editor-theme";
 import { getLanguageExtensions } from "@/lib/language-extension";
 import { indentationMarkers } from "@replit/codemirror-indentation-markers";
 import { customSetup } from "@/lib/custom-setup";
-import { suggestion } from "@/lib/suggestion";
+// import { suggestion } from "@/lib/suggestion";
 
 interface Props {
   fileName: string;

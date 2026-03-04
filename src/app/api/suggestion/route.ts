@@ -1,6 +1,6 @@
 import { generateText } from "ai";
 import { NextResponse } from "next/server";
-import { google } from "@ai-sdk/google";
+import { groq } from "@ai-sdk/groq";
 import { SUGGESTION_PROMPT } from "@/constants";
 
 export async function POST(req: Request) {
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       .replace("{lineNumber}", lineNumber.toString());
 
     const { text } = await generateText({
-      model: google("gemini-2.5-flash"),
+      model: groq("moonshotai/kimi-k2-instruct-0905"),
       prompt,
     });
 
