@@ -85,10 +85,9 @@ const DEBOUNCE_DELAY = 300;
 
 let currentAbortController: AbortController | null = null;
 
-
-const generatePayload = (view: EditorView, fileName: string ) => {
+const generatePayload = (view: EditorView, fileName: string) => {
   const code = view.state.doc.toString();
-  if(!code || code.trim().length === 0) return null;
+  if (!code || code.trim().length === 0) return null;
 
   const cursorPosition = view.state.selection.main.head;
   const currentLine = view.state.doc.lineAt(cursorPosition);
@@ -97,12 +96,12 @@ const generatePayload = (view: EditorView, fileName: string ) => {
   const previousLines: string[] = [];
   const previousLinesToFetch = Math.min(5, currentLine.number - 1);
 
-  for(let i  = previousLinesToFetch; i >= 1; i--) {
-  previousLines.push(view.state.doc.line(currentLine.number - i).text);
+  for (let i = previousLinesToFetch; i >= 1; i--) {
+    previousLines.push(view.state.doc.line(currentLine.number - i).text);
   }
 
   const nextLines: string[] = [];
-  const totalLines =view.state.doc.lines;
+  const totalLines = view.state.doc.lines;
 
   const linesToFetch = Math.min(5, totalLines - currentLine.number);
 
@@ -140,31 +139,29 @@ const debouncePlugin = (fileName: string) => {
           clearTimeout(debounceTimer);
         }
 
-
-        if(currentAbortController) 
-        {
+        if (currentAbortController) {
           currentAbortController.abort();
         }
 
         isWaitingForSuggestion = true;
 
         debounceTimer = window.setTimeout(async () => {
-         
           const payload = generatePayload(view, fileName);
-          
-          if(!payload) {
+
+          if (!payload) {
             isWaitingForSuggestion = false;
             view.dispatch({
               effects: setSuggestionEffect.of(null),
-              
             });
             return;
-          
           }
 
           currentAbortController = new AbortController();
 
-          const suggestion = await fetcher(payload, currentAbortController.signal);
+          const suggestion = await fetcher(
+            payload,
+            currentAbortController.signal
+          );
 
           isWaitingForSuggestion = false;
           view.dispatch({
@@ -178,7 +175,7 @@ const debouncePlugin = (fileName: string) => {
           clearTimeout(debounceTimer);
         }
 
-        if(currentAbortController !== null) {
+        if (currentAbortController !== null) {
           currentAbortController.abort();
         }
       }
